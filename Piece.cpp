@@ -1,6 +1,6 @@
 #include "Arduino.h" 
 #include "Piece.h" 
-   
+
 const byte Piece::PIECE_DIMENSIONS[7][2] = {{4,4}, {3,3}, {3,3}, {3,4}, {3,3}, {3,3}, {3,3}};
 
 const byte Piece::PIECE_TEMPLATES[7][4][4] = {
@@ -15,13 +15,8 @@ const byte Piece::PIECE_TEMPLATES[7][4][4] = {
 
 // Creates a 2d array representing the tetris piece
 void Piece::createArray(){
-    pieceArray = new byte*[height];
-
-    for(int i = 0; i < height; i++)
-        pieceArray[i] = new byte[width];
-
-    for(int i = 0; i < height; i++){
-        for(int j = 0; j < width; j++){
+    for(int i = 0; i < MAX_X_SIZE; i++){
+        for(int j = 0; j < MAX_Y_SIZE; j++){
             pieceArray[i][j] = PIECE_TEMPLATES[type][i][j];
         }
     }
@@ -29,21 +24,20 @@ void Piece::createArray(){
 
 Piece::Piece(const int PIECE_TYPE, const int NUM_COLS){
     type = PIECE_TYPE;
-    width = PIECE_DIMENSIONS[0][1];
-    height = PIECE_DIMENSIONS[0][0];
+    width = PIECE_DIMENSIONS[type][1];
+    height = PIECE_DIMENSIONS[type][0];
 
     int middleOfRow = (NUM_COLS-width)/2;
-    Serial.print((middleOfRow));
 
     x = middleOfRow;
     y = 0;
 
-	this->createArray();
+    this->createArray();
 }
 
-// void Piece::rotate(String direction){
+void Piece::rotate(String direction){
 
-// }
+}
 
 /*
     Moves the piece in the x direction on a grid
@@ -62,4 +56,3 @@ void Piece::move(int xDirection, int yDirection){
 // void Piece::drop(byte** grid){
 
 // }
-

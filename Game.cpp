@@ -9,14 +9,16 @@ void printBinary(byte inByte){
 }
 
 Game::Game(){
-    initBoard();
-
-    player = new Player();
-    
-    ledMatrix = new LedControl(DIN,CLK,CS,4);
-    ledMatrix->shutdown(0,false);
-    ledMatrix->setIntensity(0,5); // Sets brightness ranging from 0-15
-    ledMatrix->clearDisplay(0); 
+  ledMatrix = new LedControl(DIN,CLK,CS,4);
+  
+  for(int i = 0; i < 4; i++){
+    ledMatrix->shutdown(i,false); // turn off power saving, enables display
+    ledMatrix->setIntensity(i,1); // sets brightness (0~15 possible values)
+    // ledMatrix->clearDisplay(i); // clear screen
+  }
+  
+  initBoard();
+  player = new Player();
 }
 
 // Populate board array with zeros
@@ -46,11 +48,8 @@ byte* Game::serialize(byte (&boardWithPiece)[ROWS][COLS]){
 }
 
 void Game::start(){
-    Serial.print("test: ");
-    Serial.println(random(0,7));
-
-    player->getNewPiece(COLS);
-    displayBlocks();
+  player->getNewPiece(COLS);
+  updateBoard();
 }
 
 // Copies board and piece into into result array:
@@ -74,18 +73,15 @@ void Game::cloneBoardWithPiece(byte (&boardWithPiece)[ROWS][COLS]){
 }
 
 // Draws all the blocks on the tetris board on the led display
-void Game::displayBlocks(){
+void Game::updateBoard(){
     byte boardWithPiece[ROWS][COLS];
     cloneBoardWithPiece(boardWithPiece);
     
     byte* blocksToDisplay = serialize(boardWithPiece);
 
-    int devices = ledMatrix->getDeviceCount();
-
-    for(int i = 0; i < ROWS; i++){
-        int row = 7-(i%8);
-        int address = 3-(i/8);
-
-        ledMatrix->setColumn(address, row, blocksToDisplay[i]);
+    for(int i = 0; i < 32; i++){
+      int row = (i%8);
+      int address = 3-(i/8);
+      ledMatrix->setColumn(address, row, blocksToDisplay[i]);
     }
 }

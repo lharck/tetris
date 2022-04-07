@@ -4,25 +4,24 @@
 
 class Game {
 private:
-    static const byte DIN=12, CLK=11, CS=10; // pins for the led matrix
+    static const byte DIN=12, CS=11, CLK=10; // pins for the led matrix
     LedControl* ledMatrix;
 
 	const static byte ROWS = 32;
 	const static byte COLS = 8;
 	// String state;
 	byte board[ROWS][COLS]; 
-
-    Player* player;
     
 	void initBoard();
     byte* serialize(byte (&boardWithPiece)[ROWS][COLS]);
     void cloneBoardWithPiece(byte (&boardWithPiece)[ROWS][COLS]);
-    void displayBlocks();
 
 public:
     Game();
+    Player* player;
     void drawBoard();
     void start();
+    void updateBoard();
 
     /*
         TODO: James
