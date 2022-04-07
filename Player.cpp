@@ -20,52 +20,56 @@ void Player::getNewPiece(const int NUM_COLS){
 // }
 
 void Player::onDropButtonPressed(){
-
+  // piece->hardDrop();
 }
 
 void Player::onLeftRotatePressed(){
+  piece->rotate("Left");
 }
 
 void Player::onRightRotatePressed(){
-  
+  piece->rotate("Right");
 } 
 
 void Player::onJoystickPressed(){
-  
+  // piece->hardDrop();
 } 
 
-void Player::onJoystickMoved(int x, int y){
+bool Player::onJoystickMoved(int x, int y){
   switch(x){
-    case 0: piece->move(-1,0); return;
-    case 6: piece->move(1,0); return;
+    case 0: piece->move(1,0); return true;
+    case 6: piece->move(-1,0); return true;
     default: break;
   } 
 
-  if(y==0){
+  if(y <= 1){
     piece->move(0,1);
+    return true;
   }
+
+  return false;
 }
 
 
-void Player::processJoystick(){  
+bool Player::processJoystick(){  
   int xValue = analogRead(JOY_X_PIN);
   int yValue = analogRead(JOY_Y_PIN);
   int xMap = map(xValue, 0, 1023, 0, 7);
   int yMap = map(yValue, 0, 1023, 7, 0); 
 
-  onJoystickMoved(xMap, yMap);
+  return onJoystickMoved(xMap, yMap);
 }
 
-void Player::processButtons(){
+bool Player::processButtons(){
   for(int i = 0; i < NUM_BUTTONS; i++){
     previousButtonStates[i] = currentButtonStates[i];
     currentButtonStates[i] = digitalRead(buttonPins[i]);
     
     if(previousButtonStates[i] != currentButtonStates[i] && currentButtonStates[i] == 0){
-        // ignores the button press if we pressed a button less than 10 ms about 
-        // to prevent 'contact bouncing'
-        if(millis() - lastButtonPress < 10){return;} 
-        lastButtonPress = millis();
+      // ignores the button press if we pressed a button less than 10 ms about 
+      // to prevent 'contact bouncing'
+      if(millis() - lastButtonPress < 10){return false;} 
+      lastButtonPress = millis();
       
       switch(buttonPins[i]){
           case HARD_DROP_PIN: onDropButtonPressed(); break;
@@ -73,11 +77,14 @@ void Player::processButtons(){
           case RIGHT_ROTATE_PIN: onRightRotatePressed(); break;
           case JOY_CLICK_PIN: onJoystickPressed(); break;
       }
+
+      return true;
     }
   }
+
+  return false;
 }
 
-void Player::checkInputChange(){
-  processJoystick();
-  processButtons();
+bool Player::checkInputChange(){
+  return processJoystick() || processButtons();
 }

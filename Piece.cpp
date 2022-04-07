@@ -45,14 +45,16 @@ void Piece::rotate(String direction){
     - if y is -1 => moves down
     - if y is 1 => not valid throw error
 */
-void Piece::move(int xDirection, int yDirection){
-    // TODO: make sure xDirection is either 1/-1/0
-    // TODO: make sure yDirection is either 0/1
-
+void Piece::move(int xDirection, int yDirection){  
+  bool outOfBounds = abs(xDirection) != 1 && xDirection != 0 && abs(yDirection) != 1 && yDirection != 0; 
+  if(outOfBounds){return;}
+  if(x+xDirection > 7 || x+xDirection < 0){return;}
+  if(y+yDirection > 31 || y+yDirection < 0){return;}
+    
     x += xDirection;
     y += yDirection;
 }
 
-// void Piece::drop(byte** grid){
+void Piece::hardDrop(byte** grid){
 
-// }
+}

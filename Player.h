@@ -15,8 +15,8 @@ private:
     byte previousButtonStates[NUM_BUTTONS] = {1,1,1,1};
     byte currentButtonStates[NUM_BUTTONS] = {1,1,1,1};
 
-    void processJoystick();
-    void processButtons(); 
+    bool processJoystick();
+    bool processButtons(); 
 
 public:
     Piece* piece;
@@ -27,7 +27,7 @@ public:
     void onJoystickPressed();
     void onLeftRotatePressed();
     void onRightRotatePressed();
-    void onJoystickMoved(int x, int y);
-    void checkInputChange();
+    bool onJoystickMoved(int x, int y);
+    bool checkInputChange();
     void getNewPiece(const int NUM_COLS);
 };

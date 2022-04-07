@@ -11,5 +11,10 @@ void setup() {
 }
 
 void loop(){
-  game->player->checkInputChange();
+  bool inputPressed = game->player->checkInputChange();
+
+  if(inputPressed){
+   // Serial.println("UPDATING");
+    game->updateBoard();
+  }
 }
