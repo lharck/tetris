@@ -1,4 +1,4 @@
-#include "Arduino.h" 
+#include "Arduino.h"
 #include "Piece.h"
 
 class Player {
