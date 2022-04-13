@@ -35,8 +35,37 @@ Piece::Piece(const int PIECE_TYPE, const int NUM_COLS){
     this->createArray();
 }
 
-void Piece::rotate(String direction){
+void Piece::copyArray() {
+  for(int i = 0; i < width; i++){
+    for(int j = 0; j < height; j++) {
+      copy[i][j] = pieceArray[i][j];
+    }
+  }
+}
 
+void Piece::rotate90CC() {
+  for(byte i = 0; i < width; i++) {
+    for(byte j = 0; j < height; j++) {
+      pieceArray[i][j] = copy[height-1-j][i];
+    }
+  }
+}
+
+void Piece::rotate90C() {
+  for(byte i = 0; i < width; i++) {
+    for(byte j = 0; j < height; j++) {
+      pieceArray[i][j] = copy[j][width-1-i];
+    }
+  }
+}
+
+void Piece::rotate(String direction){
+  copyArray();
+  if (direction == "Right"){
+    rotate90C();
+  } else {
+    rotate90CC();
+  }
 }
 
 /*

@@ -18,11 +18,15 @@ public:
 
     byte type;
 	  byte pieceArray[MAX_X_SIZE][MAX_Y_SIZE];
+    byte copy[MAX_X_SIZE][MAX_Y_SIZE];
     byte width, height; 
     byte x, y;
         
     Piece(int PIECE_TYPE, const int NUM_COLS);
     void printArray();
+    void copyArray();
+    void rotate90C();
+    void rotate90CC();
     void rotate(String direction); // TODO: matt
     void move(int xDirection, int yDirection);
     void hardDrop(byte** grid); // TODO: ???
