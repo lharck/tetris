@@ -8,7 +8,9 @@ class Piece {
    public:
     // Defines the width / height of each tetris piece
     static const byte PIECE_DIMENSIONS[7][2];
-    static const int MAX_X_SIZE = 4, MAX_Y_SIZE = 4;
+    static const byte PIECE_BOARD_COORDINATES[7][4];
+    static const byte PIECE_ARRAY_COORDINATES[7][4];
+    static const int MAX_X_SIZE=4, MAX_Y_SIZE=4;
 
     /* The definitions for each tetris piece
     Based Tetris pieces on the following image:
@@ -21,12 +23,14 @@ class Piece {
     byte type;
     byte pieceArray[MAX_X_SIZE][MAX_Y_SIZE];
     byte copy[MAX_X_SIZE][MAX_Y_SIZE];
-    byte width, height;
+    byte width, height; 
+    byte xBoardLeft, xBoardRight, yBoardUp, yBoardLow, xArrayLeft, xArrayRight, yArrayUp, yArrayLow, x, y;
+        
     byte x, y;
 
     byte currentWidth;
     byte currentHeight;
-
+  
     Piece(int PIECE_TYPE, const int NUM_COLS);
     void printArray();
     void copyArray();
