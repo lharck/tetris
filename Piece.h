@@ -24,7 +24,7 @@ class Piece {
     byte pieceArray[MAX_X_SIZE][MAX_Y_SIZE];
     byte copy[MAX_X_SIZE][MAX_Y_SIZE];
     byte width, height; 
-    byte xBoardLeft, xBoardRight, yBoardUp, yBoardLow, xArrayLeft, xArrayRight, yArrayUp, yArrayLow, x, y;
+    byte xBoardLeft, xBoardRight, yBoardUp, yBoardLow, xArrayLeft, xArrayRight, yArrayUp, yArrayLow;
         
     byte x, y;
 
