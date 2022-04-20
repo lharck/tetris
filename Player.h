@@ -12,7 +12,11 @@ class Player {
     const byte buttonPins[NUM_BUTTONS] = {HARD_DROP_PIN, LEFT_ROTATE_PIN,
                                           RIGHT_ROTATE_PIN, JOY_CLICK_PIN};
 
-    unsigned long lastButtonPress = millis();
+    unsigned long lastButtonPressTime;
+    unsigned long lastSoftDropTime;
+    unsigned long verticalHoldStartTime;
+    
+    String prevJoystickDirection;
 
     byte previousButtonStates[NUM_BUTTONS] = {1, 1, 1, 1};
     byte currentButtonStates[NUM_BUTTONS] = {1, 1, 1, 1};

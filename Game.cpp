@@ -44,7 +44,7 @@ void Game::serialize(byte (&boardWithPiece)[ROWS][COLS],
         byte result = 0;
 
         for (int j = 0; j < COLS; j++) {
-            result += ((byte)(boardWithPiece[i][j]) << (7 - j));
+            result += ((byte)(boardWithPiece[i][j]) << j);
         }
 
         serializedBoard[i] = result;
@@ -52,9 +52,9 @@ void Game::serialize(byte (&boardWithPiece)[ROWS][COLS],
 }
 
 void Game::start() {
-    player->getNewPiece(COLS);
-    updateBoard();
-    state = States::WaitingForInput;
+  player->getNewPiece(COLS);
+  updateBoard();
+  state = States::WaitingForInput;
 }
 
 // Copies board and piece into into result array:
@@ -78,7 +78,7 @@ void Game::cloneBoardWithPiece(byte (&boardWithPiece)[ROWS][COLS]) {
 }
 
 // Draws all the blocks on the tetris board on the led display
-void Game::updateBoard() {
+void Game::updateBoard() { 
     byte boardWithPiece[ROWS][COLS];
     cloneBoardWithPiece(boardWithPiece);
 

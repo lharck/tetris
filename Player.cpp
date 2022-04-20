@@ -3,6 +3,10 @@
 #include "Arduino.h"
 
 Player::Player() {
+    lastButtonPressTime = millis();
+    lastSoftDropTime = millis();
+    prevJoystickDirection = "";
+    
     for (byte pin : buttonPins) {
         pinMode(pin, INPUT_PULLUP);
     }
@@ -16,10 +20,6 @@ void Player::getNewPiece(const int NUM_COLS) {
     piece = new Piece(chosenPieceType, NUM_COLS);
 }
 
-// void Player::onEliminiated(){
-
-// }
-
 void Player::onDropButtonPressed() { piece->hardDrop(); }
 
 void Player::onLeftRotatePressed() { piece->rotate("Left"); }
@@ -28,21 +28,36 @@ void Player::onRightRotatePressed() { piece->rotate("Right"); }
 
 void Player::onJoystickPressed() { piece->hardDrop(); }
 
-bool Player::onJoystickMoved(int x, int y) {
+bool Player::onJoystickMoved(int x, int y) { 
     if (x >= 5) {
+        if(prevJoystickDirection == "XRIGHT"){
+            return false;
+        }
         piece->move(-1, 0);
+        prevJoystickDirection = "XRIGHT";
         return true;
     } else if (x <= 1) {
+        if(prevJoystickDirection == "XLEFT"){
+          return false;
+        }
         piece->move(1, 0);
+        prevJoystickDirection = "XLEFT";
         return true;
     }
+
     //Serial.println(y);
 
     if (y <= 2) {
+        if(prevJoystickDirection == "YDOWN" && millis() - lastSoftDropTime < 100){
+          return false;
+        }
+        prevJoystickDirection = "YDOWN";
         piece->move(0, 1);
+        lastSoftDropTime = millis();
         return true;
     }
-
+    
+    prevJoystickDirection = "";
     return false;
 }
 
@@ -64,10 +79,11 @@ bool Player::processButtons() {
             currentButtonStates[i] == 0) {
             // ignores the button press if we pressed a button less than 10 ms
             // to prevent 'contact bouncing'
-            if (millis() - lastButtonPress < 10) {
+            if (millis() - lastButtonPressTime < 10) {
                 return false;
             }
-            lastButtonPress = millis();
+            
+            lastButtonPressTime = millis();
 
             switch (buttonPins[i]) {
                 case HARD_DROP_PIN:

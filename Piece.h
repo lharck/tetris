@@ -4,8 +4,6 @@ class Game;
 class Piece {
    private:
     void createArray();
-
-   public:
     // Defines the width / height of each tetris piece
     static const byte PIECE_DIMENSIONS[7][2];
     static const byte PIECE_BOARD_COORDINATES[7][4];
@@ -19,23 +17,24 @@ class Piece {
     https://qph.fs.quoracdn.net/main-qimg-bf707b034d64c955a8f5c1f89d7000aa
     */
     static const byte PIECE_TEMPLATES[7][MAX_X_SIZE][MAX_Y_SIZE];
-
     byte type;
-    byte pieceArray[MAX_X_SIZE][MAX_Y_SIZE];
     byte copy[MAX_X_SIZE][MAX_Y_SIZE];
-    byte width, height; 
     signed char xBoardLeft, xBoardRight, yBoardUp, yBoardLow, xArrayLeft, xArrayRight, yArrayUp, yArrayLow;
-        
-    byte x, y;
 
+    void rotate90C();
+    void rotate90CC();
+    void copyArray();
+   
+   public:
+    byte width, height;
+    byte pieceArray[MAX_X_SIZE][MAX_Y_SIZE];
+
+    byte x, y;
     byte currentWidth;
     byte currentHeight;
   
     Piece(int PIECE_TYPE, const int NUM_COLS);
-    void printArray();
-    void copyArray();
-    void rotate90C();
-    void rotate90CC();
+    
     void rotate(String direction);
     void move(int xDirection, int yDirection);
     void hardDrop();

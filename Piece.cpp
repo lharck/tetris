@@ -8,8 +8,8 @@ const byte Piece::PIECE_ARRAY_COORDINATES[7][4] = {{0,3,1,1}, {0,2,0,1}, {0,2,0,
 
 const byte Piece::PIECE_TEMPLATES[7][4][4] = {
     {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},  // I piece
-    {{1, 0, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},  // L piece
-    {{0, 0, 1, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},  // J piece
+    {{1, 0, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},  // J piece
+    {{0, 0, 1, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},  // L piece
     {{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},  // O piece
     {{0, 1, 1, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},  // S piece
     {{0, 1, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},  // T piece
@@ -35,11 +35,9 @@ Piece::Piece(const int PIECE_TYPE, const int NUM_COLS) {
     currentHeight = height;
 
     int middleOfRow = (NUM_COLS - width) / 2;
-
     x = middleOfRow;
     y = 0;
-    //x=3;
-    //y=1;
+
     xBoardLeft = PIECE_BOARD_COORDINATES[type][0];
     xBoardRight = PIECE_BOARD_COORDINATES[type][1];
     yBoardUp = PIECE_BOARD_COORDINATES[type][2];
@@ -256,8 +254,9 @@ void Piece::move(int xDirection, int yDirection) {
     if (yBoardLow + yDirection > 31 || yBoardUp + yDirection < 0) {
         return;
     }
-  
+    
     x += xDirection;
+    
     xBoardRight+=xDirection;
     xBoardLeft+=xDirection;
     y += yDirection;
