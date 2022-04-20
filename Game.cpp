@@ -4,9 +4,9 @@
 
 void printBinary(byte inByte) {
     for (int b = 7; b >= 0; b--) {
-        Serial.print(bitRead(inByte, b));
+        //Serial.print(bitRead(inByte, b));
     }
-    Serial.println();
+    //Serial.println();
 }
 
 Game::Game() {

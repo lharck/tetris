@@ -26,7 +26,8 @@ void Piece::createArray() {
 }
 
 Piece::Piece(const int PIECE_TYPE, const int NUM_COLS) {
-    type = PIECE_TYPE;
+    //type = PIECE_TYPE;
+    type = 1;
     width = PIECE_DIMENSIONS[type][1];
     height = PIECE_DIMENSIONS[type][0];
 
@@ -37,6 +38,8 @@ Piece::Piece(const int PIECE_TYPE, const int NUM_COLS) {
 
     x = middleOfRow;
     y = 0;
+    //x=3;
+    //y=1;
     xBoardLeft = PIECE_BOARD_COORDINATES[type][0];
     xBoardRight = PIECE_BOARD_COORDINATES[type][1];
     yBoardUp = PIECE_BOARD_COORDINATES[type][2];
@@ -58,13 +61,14 @@ void Piece::copyArray() {
     }
 }
 
-void Piece::rotate90CC() {
+void Piece::rotate90C() {
+  Serial.println("C");
   byte xMax = 0, xMin = width-1, yMin = height-1, yMax = 0;
-  byte xRightDelta = 0, xLeftDelta = 0, yUpDelta = 0, yLowDelta = 0;
+  signed char xRightDelta = 0, xLeftDelta = 0, yUpDelta = 0, yLowDelta = 0;
   for(byte i = 0; i < width; i++) {
     for(byte j = 0; j < height; j++) {
       pieceArray[i][j] = copy[height-1-j][i];
-      
+      Serial.println("xMax: " + String(xMax) + " xMin: " + String(xMin));
       if (pieceArray[i][j] == 1) {
         if (j > xMax) {
           xMax = j;
@@ -88,10 +92,21 @@ void Piece::rotate90CC() {
           yMin = i;
         }
       }
+      
     }
   }
-  xRightDelta = xMax - xArrayRight;
-  xLeftDelta = xMin - xArrayLeft;
+  Serial.println("final: xMax: " + String(xMax) + " xMin: " + String(xMin));
+//  if (xMax != width-1) {
+//    xRightDelta = xMax - xArrayRight-1;
+//    xLeftDelta = xMin - xArrayLeft-1;
+//  }
+//  else if (xMin != 0) {
+//    xRightDelta = xMax - xArrayRight+1;
+//    xLeftDelta = xMin - xArrayLeft+1;
+//  } else {
+    xRightDelta = xMax - xArrayRight;
+    xLeftDelta = xMin - xArrayLeft;
+  //}
   yLowDelta = yMax - yArrayLow;
   yUpDelta = yMin - yArrayUp;
   
@@ -106,25 +121,34 @@ void Piece::rotate90CC() {
   yBoardUp+=yUpDelta;
 
   if (xBoardRight < 0) {
-    //LeftKick(0-xBoardRight);
+    
+    x -=(0-xBoardRight);
+    xBoardLeft -= (0-xBoardRight);
+    xBoardRight = 0;
   }
 
   if (xBoardLeft > 7) {
-    //xKick(7-xBoardLeft);
+    x +=(7-xBoardLeft);
+    xBoardRight += (7-xBoardLeft);
+    xBoardLeft = 7;
   }
 
   if (yBoardLow > 31) {
-    //yKick(31-yBoardLow);
+    y +=(31-yBoardLow);
+    yBoardUp += (31-yBoardLow);
+    yBoardLow = 31;
   }
 
 }
 
-void Piece::rotate90C() {
+void Piece::rotate90CC() {
+  Serial.println("CC");
   byte xMax = 0, xMin = width-1, yMin = height-1, yMax = 0;
-  byte xRightDelta = 0, xLeftDelta = 0, yUpDelta = 0, yLowDelta = 0;
+  signed char xRightDelta = 0, xLeftDelta = 0, yUpDelta = 0, yLowDelta = 0;
   for(byte i = 0; i < width; i++) {
     for(byte j = 0; j < height; j++) {
       pieceArray[i][j] = copy[j][width-1-i];
+      Serial.println("xMax: " + String(xMax) + " xMin: " + String(xMin));
 
       if (pieceArray[i][j] == 1) {
         if(j > xMax) {
@@ -151,10 +175,19 @@ void Piece::rotate90C() {
       }
     }
   }
+  Serial.println("final: xMax: " + String(xMax) + " xMin: " + String(xMin));
   //
- 
-  xRightDelta = xMax - xArrayRight;
-  xLeftDelta = xMin - xArrayLeft;
+//  if (xMax != width-1) {
+//    xRightDelta = xMax - xArrayRight-1;
+//    xLeftDelta = xMin - xArrayLeft-1;
+//  }
+//  else if (xMin != 0) {
+//    xRightDelta = xMax - xArrayRight+1;
+//    xLeftDelta = xMin - xArrayLeft+1;
+//  } else {
+    xRightDelta = xMax - xArrayRight;
+    xLeftDelta = xMin - xArrayLeft;
+  //}
   yLowDelta = yMax - yArrayLow;
   yUpDelta = yMin - yArrayUp;
   
@@ -169,15 +202,21 @@ void Piece::rotate90C() {
   yBoardUp+=yUpDelta;
 
   if (xBoardRight < 0) {
-    //LeftKick(0-xBoardRight);
+    x -=(0-xBoardRight);
+    xBoardLeft -= (0-xBoardRight);
+    xBoardRight = 0;
   }
 
   if (xBoardLeft > 7) {
-    //xKick(7-xBoardLeft);
+    x +=(7-xBoardLeft);
+    xBoardRight += (7-xBoardLeft);
+    xBoardLeft = 7;
   }
 
   if (yBoardLow > 31) {
-    //yKick(31-yBoardLow);
+    y += (31-yBoardLow);
+    yBoardUp += (31-yBoardLow);
+    yBoardLow = 31;
   }
 }
 
@@ -198,6 +237,7 @@ void Piece::rotate(String direction) {
 */
 
 void Piece::move(int xDirection, int yDirection) {
+    //Serial.println("Right: " + String(xBoardRight) + " Left: " + String(xBoardLeft));
     bool inputValid =
         (abs(xDirection) == 1 ||
          xDirection == 0) &&  // xDirection can either be -1, 1, or 0
@@ -210,10 +250,10 @@ void Piece::move(int xDirection, int yDirection) {
         return;
     }
 
-    if (x + (currentWidth - 1) + xDirection > 7 || x + xDirection < 0) {
+    if (xBoardLeft + xDirection > 7 || xBoardRight + xDirection < 0) {
         return;
     }
-    if (y + (currentHeight - 1) + yDirection > 31 || y + yDirection < 0) {
+    if (yBoardLow + yDirection > 31 || yBoardUp + yDirection < 0) {
         return;
     }
   

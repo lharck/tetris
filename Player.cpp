@@ -36,7 +36,7 @@ bool Player::onJoystickMoved(int x, int y) {
         piece->move(1, 0);
         return true;
     }
-    Serial.println(y);
+    //Serial.println(y);
 
     if (y <= 2) {
         piece->move(0, 1);
