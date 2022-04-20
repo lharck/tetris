@@ -1,10 +1,14 @@
 #include "Game.h"
+#include "RandomSeed.h"
+#include <avr/eeprom.h>
+
 Game* game;
+uint32_t reseedRandomSeed EEMEM = 0xFFFFFFFF;
 
 void setup() {
     Serial.begin(9600);
-    randomSeed(analogRead(A0));
-    random(0, 7);
+    RandomSeed.reseedRandom(&reseedRandomSeed);
+    
     game = new Game();
     game->start();
 }
