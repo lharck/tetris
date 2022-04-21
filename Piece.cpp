@@ -263,7 +263,7 @@ void Piece::move(int xDirection, int yDirection) {
     y += yDirection;
     yBoardUp+=yDirection;
     yBoardLow+=yDirection;
-    Serial.println("Right: " + String(xBoardRight) + " Left: " + String(xBoardLeft));
+    Serial.println("x: " + String(x) + " Left: " + String(xBoardLeft));
 }
 
 void Piece::hardDrop() {
