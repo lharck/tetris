@@ -57,28 +57,27 @@ void loop() {
         String actionPerformed = game->player->checkInputChange();
         bool timeToDropPiece = (bool)(millis() - lastSoftDropTime > SOFT_DROP_INTERVAL);
 
-        if(actionPerformed == "HardDrop"){
-          game->placePiece(game->board); // put the piece onto the board  
-          game->deleteClearedLines();
-          game->player->getNewPiece(); // give the player a new piece
+        if(actionPerformed != "None"){   
           game->updateBoard();
+          lastSoftDropTime = millis() - (SOFT_DROP_INTERVAL/2);
         }
-        else if (actionPerformed != "None") {
+
+        else{
+           // if it's time to drop the piece:
+          if (timeToDropPiece) {
+            game->player->piece->move(0,1);
+            lastSoftDropTime = millis();
             game->updateBoard();
-            lastSoftDropTime = millis() - (SOFT_DROP_INTERVAL/2);
+          }
         }
 
-        if (timeToDropPiece) {
-           game->player->piece->move(0,1);
-           game->deleteClearedLines();
-           lastSoftDropTime = millis();                 
-           game->updateBoard();
-        }
-
+        // if we've fallen to the bottom of the board or on top of a piece:
         if(game->player->piece->hasFallen()){
-            game->placePiece(game->board); // put the piece onto the board
-            game->deleteClearedLines();  
-            game->player->getNewPiece(); // give the player a new piece
-        }
+          game->placePiece(game->board);
+          game->deleteClearedLines();  
+          game->player->getNewPiece();
+          game->updateBoard(); 
+        }    
     }
+                
 }
