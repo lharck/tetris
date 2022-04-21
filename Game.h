@@ -19,7 +19,6 @@ class Game {
     int linesCleared;
    public:
     Game();
-    String commandToSend;
 
     enum class States {
         GameOver,
@@ -31,6 +30,7 @@ class Game {
     byte board[ROWS][COLS];
 
     States state;
+    String commandToSend;
 
     Player* player;
     void drawBoard();
