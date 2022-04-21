@@ -1,7 +1,7 @@
 #include "Piece.h"
 
 const byte Piece::PIECE_DIMENSIONS[7][2] = {{4,4}, {3,3}, {3,3}, {3,4}, {3,3}, {3,3}, {3,3}};
-const byte Piece::PIECE_BOARD_COORDINATES[7][4] = {{5,2,1,1}, {4,2,0,1}, {4,2,0,1}, {4,3,0,1}, {4,2,0,1}, {4,2,0,1}, {4,2,0,1}};  // xBoardLeft, xBoardRight, yBoardUp, yBoardLow
+const byte Piece::PIECE_BOARD_COORDINATES[7][4] = {{2,5,1,1}, {2,4,0,1}, {2,4,0,1}, {3,4,0,1}, {2,4,0,1}, {2,4,0,1}, {2,4,0,1}};  // xBoardLeft, xBoardRight, yBoardUp, yBoardLow
 const byte Piece::PIECE_ARRAY_COORDINATES[7][4] = {{0,3,1,1}, {0,2,0,1}, {0,2,0,1}, {1,2,0,1}, {0,2,0,1}, {0,2,0,1}, {0,2,0,1}};  // xArrayLeft, xArrayRight, yArrayUp, yArrayLow
 
 #include "Arduino.h"
@@ -26,8 +26,7 @@ void Piece::createArray() {
 }
 
 Piece::Piece(const int PIECE_TYPE, const int NUM_COLS) {
-    //type = PIECE_TYPE;
-    type = 1;
+    type = PIECE_TYPE;
     width = PIECE_DIMENSIONS[type][1];
     height = PIECE_DIMENSIONS[type][0];
 
@@ -113,22 +112,21 @@ void Piece::rotate90C() {
   yArrayLow=yMax;
   yArrayUp=yMin;
 
-  xBoardRight-=xRightDelta;
-  xBoardLeft-=xLeftDelta;
+  xBoardRight+=xRightDelta;
+  xBoardLeft+=xLeftDelta;
   yBoardLow+=yLowDelta;
   yBoardUp+=yUpDelta;
 
-  if (xBoardRight < 0) {
-    
-    x -=(0-xBoardRight);
-    xBoardLeft -= (0-xBoardRight);
-    xBoardRight = 0;
+  if (xBoardLeft < 0) {
+    x +=(0-xBoardLeft);
+    xBoardRight += (0-xBoardLeft);
+    xBoardLeft = 0;
   }
 
-  if (xBoardLeft > 7) {
-    x +=(7-xBoardLeft);
-    xBoardRight += (7-xBoardLeft);
-    xBoardLeft = 7;
+  if (xBoardRight > 7) {
+    x +=(7-xBoardRight);
+    xBoardLeft += (7-xBoardRight);
+    xBoardRight = 7;
   }
 
   if (yBoardLow > 31) {
@@ -136,6 +134,8 @@ void Piece::rotate90C() {
     yBoardUp += (31-yBoardLow);
     yBoardLow = 31;
   }
+
+  Serial.println("xBoardRight: " + String(xBoardRight) + " xBoardLeft: " + String(xBoardLeft));
 
 }
 
@@ -194,21 +194,21 @@ void Piece::rotate90CC() {
   yArrayLow = yMax;
   yArrayUp = yMin;
 
-  xBoardRight-=xRightDelta;
-  xBoardLeft-=xLeftDelta;
+  xBoardRight+=xRightDelta;
+  xBoardLeft+=xLeftDelta;
   yBoardLow+=yLowDelta;
   yBoardUp+=yUpDelta;
 
-  if (xBoardRight < 0) {
-    x -=(0-xBoardRight);
-    xBoardLeft -= (0-xBoardRight);
-    xBoardRight = 0;
+  if (xBoardLeft < 0) {
+    x +=(0-xBoardLeft);
+    xBoardRight += (0-xBoardLeft);
+    xBoardLeft = 0;
   }
 
-  if (xBoardLeft > 7) {
-    x +=(7-xBoardLeft);
-    xBoardRight += (7-xBoardLeft);
-    xBoardLeft = 7;
+  if (xBoardRight > 7) {
+    x +=(7-xBoardRight);
+    xBoardLeft += (7-xBoardRight);
+    xBoardRight = 7;
   }
 
   if (yBoardLow > 31) {
@@ -216,15 +216,18 @@ void Piece::rotate90CC() {
     yBoardUp += (31-yBoardLow);
     yBoardLow = 31;
   }
+  Serial.println("xBoardRight: " + String(xBoardRight) + " xBoardLeft: " + String(xBoardLeft));
 }
 
 void Piece::rotate(String direction) {
+  if (type != 3) {
     copyArray();
     if (direction == "Right") {
         rotate90C();
     } else {
         rotate90CC();
     }
+  }
 }
 
 /*
@@ -235,7 +238,6 @@ void Piece::rotate(String direction) {
 */
 
 void Piece::move(int xDirection, int yDirection) {
-    //Serial.println("Right: " + String(xBoardRight) + " Left: " + String(xBoardLeft));
     bool inputValid =
         (abs(xDirection) == 1 ||
          xDirection == 0) &&  // xDirection can either be -1, 1, or 0
@@ -248,7 +250,7 @@ void Piece::move(int xDirection, int yDirection) {
         return;
     }
 
-    if (xBoardLeft + xDirection > 7 || xBoardRight + xDirection < 0) {
+    if (xBoardRight + xDirection > 7 || xBoardLeft + xDirection < 0) {
         return;
     }
     if (yBoardLow + yDirection > 31 || yBoardUp + yDirection < 0) {
@@ -256,12 +258,12 @@ void Piece::move(int xDirection, int yDirection) {
     }
     
     x += xDirection;
-    
     xBoardRight+=xDirection;
     xBoardLeft+=xDirection;
     y += yDirection;
     yBoardUp+=yDirection;
     yBoardLow+=yDirection;
+    Serial.println("Right: " + String(xBoardRight) + " Left: " + String(xBoardLeft));
 }
 
 void Piece::hardDrop() {
