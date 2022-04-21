@@ -47,6 +47,8 @@ bool Player::onJoystickMoved(int x, int y) {
         return true;
     }
 
+    //Serial.println(y);
+
     if (y <= 2) {
         if(prevJoystickDirection == "YDOWN" && millis() - lastSoftDropTime < 100){
           return false;

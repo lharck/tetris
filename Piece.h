@@ -20,17 +20,17 @@ class Piece {
     static const byte PIECE_TEMPLATES[7][MAX_X_SIZE][MAX_Y_SIZE];
     byte type;
     byte copy[MAX_X_SIZE][MAX_Y_SIZE];
-    byte xBoardLeft, xBoardRight, yBoardUp, yBoardLow, xArrayLeft, xArrayRight, yArrayUp, yArrayLow;
+    signed char xBoardLeft, xBoardRight, yBoardUp, yBoardLow, xArrayLeft, xArrayRight, yArrayUp, yArrayLow;
 
     void rotate90C();
     void rotate90CC();
     void copyArray();
    
    public:
-    byte width, height; 
+    byte width, height;
     byte pieceArray[MAX_X_SIZE][MAX_Y_SIZE];
 
-    byte x, y;
+    signed char x, y;
     byte currentWidth;
     byte currentHeight;
   
