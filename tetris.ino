@@ -18,7 +18,6 @@ unsigned long lastSoftDropTime = millis();
 const int SOFT_DROP_INTERVAL = 1000;
 void loop() {
 
-    
     if (game->state == game->States::GameOver) {
       
     } 
@@ -28,6 +27,7 @@ void loop() {
 
         if(actionPerformed == "HardDrop"){
           game->placePiece(game->board); // put the piece onto the board  
+          game->deleteClearedLines();
           game->player->getNewPiece(); // give the player a new piece
           game->updateBoard();
         }
@@ -37,17 +37,16 @@ void loop() {
         }
 
         if (timeToDropPiece) {
-            if(game->player->piece->hasFallen()){
-              game->placePiece(game->board); // put the piece onto the board  
-              game->player->getNewPiece(); // give the player a new piece
-            }
-            else{
-              // perform soft drop:
-              game->player->piece->move(0,1);
-            }
-           
+           game->player->piece->move(0,1);
+           game->deleteClearedLines();
            lastSoftDropTime = millis();                 
            game->updateBoard();
+        }
+
+        if(game->player->piece->hasFallen()){
+            game->placePiece(game->board); // put the piece onto the board
+            game->deleteClearedLines();  
+            game->player->getNewPiece(); // give the player a new piece
         }
     }
 }

@@ -16,9 +16,10 @@ class Game {
     void serialize(byte (&boardWithPiece)[ROWS][COLS],
                    byte (&blocksToDisplay)[ROWS]);
     void copyBoard(byte (&boardWithPiece)[ROWS][COLS]);
-
+    int linesCleared;
    public:
     Game();
+    String commandToSend;
 
     enum class States {
         GameOver,
@@ -46,16 +47,8 @@ class Game {
        up
     */
     void stop();
-
-    /*
-        TODO: James:
-        When a piece is placed, clears the rows that have been completed (if
-        any) And then drops the pieces down (if any) (maybe could be another
-        function) calculate score (maybe could be another function)
-    */
-    void clearRows();
-
-    void recieveGarbage();    // TODO: James
-    void sendGarbage();       // TODO: James
-    void calculateGarbage();  // TODO: James
+    void deleteLine(int lineToDelete);
+    void deleteClearedLines();
+    void recieveGarbage(int numLines);
+    void sendGarbage();
 };

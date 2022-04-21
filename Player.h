@@ -4,7 +4,6 @@
 class Player {
    private:
     byte (*pBoard)[32][8];
-    int score;
     static const int JOY_X_PIN = A0, JOY_Y_PIN = A1, JOY_CLICK_PIN = 13;
     static const int LEFT_ROTATE_PIN = 6, RIGHT_ROTATE_PIN = 7,
                      HARD_DROP_PIN = 5;
@@ -28,6 +27,7 @@ class Player {
    public:
     Piece* piece;
     Player(byte (*pBoard)[32][8]);
+    int score;
 
     void onEliminiated();  // TODO: ???
     void onDropButtonPressed();

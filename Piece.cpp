@@ -256,7 +256,7 @@ void Piece::move(int xDirection, int yDirection) {
 
 
     // revert if move invalid
-    if(isColliding()){
+    if(isColliding() && yDirection != 31){
       x -= xDirection;
       xBoardRight-=xDirection;
       xBoardLeft-=xDirection;
@@ -287,9 +287,7 @@ bool Piece::hasFallen(){
   return false;
 }
 
-bool Piece::isColliding(){
-  if(yBoardLow == 31){return true;}
-  
+bool Piece::isColliding(){  
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
       int gridX = x + j;

@@ -10,6 +10,7 @@ void printBinary(byte inByte) {
 }
 
 Game::Game() {
+    linesCleared = 0;
     state = States::WaitingForStart;
     ledMatrix = new LedControl(DIN, CLK, CS, 4);
 
@@ -112,4 +113,71 @@ void Game::updateBoard() {
 
     isFirstFrame = 0;
     state = States::Idle;
+}
+
+void Game::deleteLine(int lineToDelete) {
+  for (int j = lineToDelete; j > 0; j--) {
+    for (int i = 0; i < COLS; i++) {
+      board[j][i] = board[j - 1][i];
+    }
+  }
+}
+
+void Game::deleteClearedLines() {
+  for(int j = ROWS - 1; j > 0; j--) {
+    int i = 0;
+    while (i < COLS) {
+      if (board[j][i] == 0){
+        break;
+      }
+      i++;
+    }  
+    if (i == COLS) {
+      deleteLine(j);
+      linesCleared++;
+    }
+  } // end of for loop
+
+
+  // Update the player's score:
+  // TODO: maybe this should be it's own function???
+  if(linesCleared == 4) {
+    player->score += 2000;
+  } else {
+    player->score += (100 * linesCleared);
+  }
+}
+
+
+void Game::recieveGarbage(int lines) {
+  int randomNum = random(0,8);
+  // i have no idea if this works or not, should move everything up by one
+  for (int j = ROWS - 1; j > 0; j--) {
+    for (int i = 0; i < COLS; i++) {
+      board[j][i] = board[j-1][i];
+    }
+  }
+  //this works for sure though
+  for (int j = ROWS - 1; j > ROWS - lines - 1; j--) { // set 1 block to be empty in garbage
+    for(int i = 0; i < COLS; i++){
+      board[j][i] = 1;
+    }
+    board[j][randomNum] = 0;
+  }
+}
+
+void Game::sendGarbage(){ 
+  if(linesCleared == 1 || linesCleared == 0) {
+     commandToSend = "";
+     linesCleared = 0;
+  } else if (linesCleared == 2) {
+    commandToSend = "!sendGarb 1\n";
+    linesCleared = 0;
+  } else if (linesCleared == 3) {
+    commandToSend = "!sendGarb 2\n";
+    linesCleared = 0;
+  } else if (linesCleared == 4) {
+    commandToSend = "!sendGarb 4\n";
+    linesCleared = 0;
+  }
 }
