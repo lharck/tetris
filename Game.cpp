@@ -52,40 +52,46 @@ void Game::serialize(byte (&boardWithPiece)[ROWS][COLS],
 }
 
 void Game::start() {
+  for(int i = 0; i < 4; i++){
+     for(int j = 0; j < 3; j++)
+      board[31-i][j+2] = 1;
+  }
+      
   player->getNewPiece();
   updateBoard();
 }
 
-// Copies board and piece into into result array:
-void Game::cloneBoardWithPiece(byte (&boardWithPiece)[ROWS][COLS]) {
-    // Copies board into boardWithPiece array
+// Copies board into into boardWithPiece array:
+void Game::copyBoard(byte (&boardWithPiece)[ROWS][COLS]) {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             boardWithPiece[i][j] = board[i][j];
         }
     }
-
-    // Copies piece onto boardWithPiece array
-    // Starting at it's current position
-    for (int i = 0; i < player->piece->height; i++) {
-        for (int j = 0; j < player->piece->width; j++) {
-            int xOff = player->piece->x + j;
-            int yOff = player->piece->y + i;
-            boardWithPiece[yOff][xOff] = player->piece->pieceArray[i][j];
-        }
-    }
 }
 
-void Game::placePiece(){
-  
+// places piece onto board
+void Game::placePiece(byte (&boardToEdit)[ROWS][COLS]){
+  for (int i = 0; i < player->piece->height; i++) {
+    for (int j = 0; j < player->piece->width; j++) {
+      int xOff = player->piece->x + j;
+      int yOff = player->piece->y + i;
+      
+      byte block = player->piece->pieceArray[i][j];
+      
+      if(block == 1)
+        boardToEdit[yOff][xOff] = player->piece->pieceArray[i][j];
+    }
+  }  
 }
 
 // Draws all the blocks on the tetris board on the led display
 void Game::updateBoard() { 
     state = States::UpdatingBoard;
-
+    
     byte boardWithPiece[ROWS][COLS];
-    cloneBoardWithPiece(boardWithPiece);
+    copyBoard(boardWithPiece);
+    placePiece(boardWithPiece);
 
     byte blocksToDisplay[ROWS];
     serialize(boardWithPiece, blocksToDisplay);

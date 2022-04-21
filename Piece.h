@@ -31,11 +31,12 @@ class Piece {
     byte pieceArray[MAX_X_SIZE][MAX_Y_SIZE];
 
     signed char x, y;
-    byte currentWidth;
-    byte currentHeight;
   
     Piece(int PIECE_TYPE, byte (*pBoard)[32][8]);
-    bool hasBlocksBelow();
+    
+    bool hasFallen();
+    bool isColliding();
+    
     void rotate(String direction);
     void move(int xDirection, int yDirection);
     void hardDrop();

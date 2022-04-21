@@ -11,12 +11,11 @@ class Game {
 
     byte isFirstFrame = 1;
     byte prevDisplayedBlocks[ROWS];
-    byte board[ROWS][COLS];
 
     void initBoard();
     void serialize(byte (&boardWithPiece)[ROWS][COLS],
                    byte (&blocksToDisplay)[ROWS]);
-    void cloneBoardWithPiece(byte (&boardWithPiece)[ROWS][COLS]);
+    void copyBoard(byte (&boardWithPiece)[ROWS][COLS]);
 
    public:
     Game();
@@ -28,13 +27,15 @@ class Game {
         WaitingForStart,
     };
 
+    byte board[ROWS][COLS];
+
     States state;
 
     Player* player;
     void drawBoard();
     void start();
     void updateBoard();
-    void placePiece();
+    void placePiece(byte (&boardToEdit)[ROWS][COLS]);
 
     /*
         TODO: James

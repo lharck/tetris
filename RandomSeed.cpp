@@ -1,3 +1,5 @@
+// Code for generating a random seed sourced from: https://forum.arduino.cc/t/the-reliable-but-not-very-sexy-way-to-seed-random/65872/53
+
 #include "RandomSeed.h"
 
 #include "Arduino.h"

@@ -22,8 +22,8 @@ class Player {
     byte previousButtonStates[NUM_BUTTONS] = {1, 1, 1, 1};
     byte currentButtonStates[NUM_BUTTONS] = {1, 1, 1, 1};
 
-    bool processJoystick();
-    bool processButtons();
+    String processJoystick();
+    String processButtons();
 
    public:
     Piece* piece;
@@ -34,7 +34,7 @@ class Player {
     void onJoystickPressed();
     void onLeftRotatePressed();
     void onRightRotatePressed();
-    bool onJoystickMoved(int x, int y);
-    bool checkInputChange();
+    String onJoystickMoved(int x, int y);
+    String checkInputChange();
     void getNewPiece();
 };

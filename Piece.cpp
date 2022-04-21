@@ -31,9 +31,6 @@ Piece::Piece(const int PIECE_TYPE, byte (*pBoard)[32][8]) {
     width = PIECE_DIMENSIONS[type][1];
     height = PIECE_DIMENSIONS[type][0];
 
-    currentWidth = width;
-    currentHeight = height;
-
     int middleOfRow = (8 - width) / 2;
     x = middleOfRow;
     y = 0;
@@ -60,13 +57,12 @@ void Piece::copyArray() {
 }
 
 void Piece::rotate90C() {
-  Serial.println("C");
   byte xMax = 0, xMin = width-1, yMin = height-1, yMax = 0;
   signed char xRightDelta = 0, xLeftDelta = 0, yUpDelta = 0, yLowDelta = 0;
   for(byte i = 0; i < width; i++) {
     for(byte j = 0; j < height; j++) {
       pieceArray[i][j] = copy[height-1-j][i];
-      Serial.println("xMax: " + String(xMax) + " xMin: " + String(xMin));
+
       if (pieceArray[i][j] == 1) {
         if (j > xMax) {
           xMax = j;
@@ -93,7 +89,6 @@ void Piece::rotate90C() {
       
     }
   }
-  Serial.println("final: xMax: " + String(xMax) + " xMin: " + String(xMin));
 //  if (xMax != width-1) {
 //    xRightDelta = xMax - xArrayRight-1;
 //    xLeftDelta = xMin - xArrayLeft-1;
@@ -135,19 +130,14 @@ void Piece::rotate90C() {
     yBoardUp += (31-yBoardLow);
     yBoardLow = 31;
   }
-
-  Serial.println("xBoardRight: " + String(xBoardRight) + " xBoardLeft: " + String(xBoardLeft));
-
 }
 
 void Piece::rotate90CC() {
-  Serial.println("CC");
   byte xMax = 0, xMin = width-1, yMin = height-1, yMax = 0;
   signed char xRightDelta = 0, xLeftDelta = 0, yUpDelta = 0, yLowDelta = 0;
   for(byte i = 0; i < width; i++) {
     for(byte j = 0; j < height; j++) {
       pieceArray[i][j] = copy[j][width-1-i];
-      Serial.println("xMax: " + String(xMax) + " xMin: " + String(xMin));
 
       if (pieceArray[i][j] == 1) {
         if(j > xMax) {
@@ -174,7 +164,6 @@ void Piece::rotate90CC() {
       }
     }
   }
-  Serial.println("final: xMax: " + String(xMax) + " xMin: " + String(xMin));
   //
 //  if (xMax != width-1) {
 //    xRightDelta = xMax - xArrayRight-1;
@@ -217,7 +206,6 @@ void Piece::rotate90CC() {
     yBoardUp += (31-yBoardLow);
     yBoardLow = 31;
   }
-  Serial.println("xBoardRight: " + String(xBoardRight) + " xBoardLeft: " + String(xBoardLeft));
 }
 
 void Piece::rotate(String direction) {
@@ -254,9 +242,10 @@ void Piece::move(int xDirection, int yDirection) {
     if (xBoardRight + xDirection > 7 || xBoardLeft + xDirection < 0) {
         return;
     }
-    if (yBoardLow + yDirection > 31 || yBoardUp + yDirection < 0) {
+    if ((yBoardLow + yDirection > 31 || yBoardUp + yDirection < 0)) {
         return;
     }
+
     
     x += xDirection;
     xBoardRight+=xDirection;
@@ -264,34 +253,62 @@ void Piece::move(int xDirection, int yDirection) {
     y += yDirection;
     yBoardUp+=yDirection;
     yBoardLow+=yDirection;
-    Serial.println("x: " + String(x) + " Left: " + String(xBoardLeft));
+
+
+    // revert if move invalid
+    if(isColliding()){
+      x -= xDirection;
+      xBoardRight-=xDirection;
+      xBoardLeft-=xDirection;
+      y -= yDirection;
+      yBoardUp-=yDirection;
+      yBoardLow-=yDirection;
+      return;
+    }
 }
 
-bool Piece::hasBlocksBelow(){
+bool Piece::hasFallen(){
+  if(yBoardLow == 31){return true;}
+  
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      int gridX = x + j;
+      int gridY = y + i;
+      
+      byte pieceArrayBlock = pieceArray[i][j];
+      byte blockBelow = (*pBoard)[gridY+1][gridX];
+
+      if(pieceArrayBlock == 1 && blockBelow == 1){
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+bool Piece::isColliding(){
+  if(yBoardLow == 31){return true;}
+  
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      int gridX = x + j;
+      int gridY = y + i;
+      
+      byte pieceArrayBlock = pieceArray[i][j];
+      byte blockBelow = (*pBoard)[gridY][gridX];
+
+      if(pieceArrayBlock == 1 && blockBelow == 1){
+        return true;
+      }
+    }
+  }
+  
   return false;
 }
 
 void Piece::hardDrop() {
-    /*
-     *
-     * TODO: this pseudo code assumes x,y is top left corner -- double check
-     * need a way to get the grid in this function
-     * talk to matt to see how he uses grid in piece
-     *
-     * from y = row below piece to last row
-     *  from piece x to piece x + width of x - 1:
-     *    int belowUs = if y isn't the bottom y+1 else y
-     *    if below us us a block:
-     *      let piece's y be current y in for loop
-     *      return
-     *
-     */
-
-
-    for (int y = 0; y < 32; y++) {
-        for (int x = 0; x < 8; x++) {
-          byte block = (*pBoard)[y][x];
-        }
-        Serial.println();
-    }
+  while(!hasFallen()){
+    this->move(0,1);    
+  }
 }

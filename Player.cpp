@@ -30,40 +30,38 @@ void Player::onRightRotatePressed() { piece->rotate("Right"); }
 
 void Player::onJoystickPressed() { piece->hardDrop(); }
 
-bool Player::onJoystickMoved(int x, int y) { 
+String Player::onJoystickMoved(int x, int y) { 
     if (x >= 5) {
         if(prevJoystickDirection == "XRIGHT"){
-            return false;
-        }
-        piece->move(-1, 0);
-        prevJoystickDirection = "XRIGHT";
-        return true;
-    } else if (x <= 1) {
-        if(prevJoystickDirection == "XLEFT"){
-          return false;
+            return "None";
         }
         piece->move(1, 0);
+        prevJoystickDirection = "XRIGHT";
+        return "MovedJoystick";
+    } else if (x <= 1) {
+        if(prevJoystickDirection == "XLEFT"){
+          return "None";
+        }
+        piece->move(-1, 0);
         prevJoystickDirection = "XLEFT";
-        return true;
+        return "MovedJoystick";
     }
 
-    //Serial.println(y);
-
     if (y <= 2) {
-        if(prevJoystickDirection == "YDOWN" && millis() - lastSoftDropTime < 100){
-          return false;
+        if(prevJoystickDirection == "YDOWN" && millis() - lastSoftDropTime < 50){
+          return "None";
         }
         prevJoystickDirection = "YDOWN";
         piece->move(0, 1);
         lastSoftDropTime = millis();
-        return true;
+        return "MovedJoystick";
     }
     
     prevJoystickDirection = "";
-    return false;
+    return "None";
 }
 
-bool Player::processJoystick() {
+String Player::processJoystick() {
     int xValue = analogRead(JOY_X_PIN);
     int yValue = analogRead(JOY_Y_PIN);
     int xMap = map(xValue, 0, 1023, 0, 7);
@@ -72,7 +70,7 @@ bool Player::processJoystick() {
     return onJoystickMoved(xMap, yMap);
 }
 
-bool Player::processButtons() {
+String Player::processButtons() {
     for (int i = 0; i < NUM_BUTTONS; i++) {
         previousButtonStates[i] = currentButtonStates[i];
         currentButtonStates[i] = digitalRead(buttonPins[i]);
@@ -82,7 +80,7 @@ bool Player::processButtons() {
             // ignores the button press if we pressed a button less than 10 ms
             // to prevent 'contact bouncing'
             if (millis() - lastButtonPressTime < 10) {
-                return false;
+                return "None";
             }
             
             lastButtonPressTime = millis();
@@ -90,25 +88,28 @@ bool Player::processButtons() {
             switch (buttonPins[i]) {
                 case HARD_DROP_PIN:
                     onDropButtonPressed();
-                    break;
+                    return "HardDrop";
                 case LEFT_ROTATE_PIN:
                     onLeftRotatePressed();
-                    break;
+                    return "Rotated";
                 case RIGHT_ROTATE_PIN:
                     onRightRotatePressed();
-                    break;
+                    return "Rotated";
                 case JOY_CLICK_PIN:
                     onJoystickPressed();
-                    break;
+                    return "HardDrop";
             }
-
-            return true;
         }
     }
 
-    return false;
+    return "None";
 }
 
-bool Player::checkInputChange() {
-    return processJoystick() || processButtons();
+String Player::checkInputChange() {
+    String actionPerformed = processJoystick();
+    
+    if(actionPerformed == "None")
+      actionPerformed = processButtons();
+      
+    return actionPerformed;
 }
