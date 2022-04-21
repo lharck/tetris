@@ -2,7 +2,9 @@
 
 #include "Arduino.h"
 
-Player::Player() {
+Player::Player(byte (*pBoard)[32][8]) {
+    this->pBoard = pBoard;
+
     lastButtonPressTime = millis();
     lastSoftDropTime = millis();
     prevJoystickDirection = "";
@@ -15,9 +17,9 @@ Player::Player() {
     score = 0;
 }
 
-void Player::getNewPiece(const int NUM_COLS) {
+void Player::getNewPiece() {
     int chosenPieceType = random(0, 7);
-    piece = new Piece(chosenPieceType, NUM_COLS);
+    piece = new Piece(chosenPieceType, pBoard);
 }
 
 void Player::onDropButtonPressed() { piece->hardDrop(); }

@@ -23,9 +23,9 @@ class Game {
 
     enum class States {
         GameOver,
-        AddingGarbage,
+        Idle,
+        UpdatingBoard,
         WaitingForStart,
-        WaitingForInput
     };
 
     States state;
@@ -34,6 +34,7 @@ class Game {
     void drawBoard();
     void start();
     void updateBoard();
+    void placePiece();
 
     /*
         TODO: James

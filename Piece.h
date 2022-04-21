@@ -3,6 +3,7 @@
 class Game;
 class Piece {
    private:
+    byte (*pBoard)[32][8];
     void createArray();
     // Defines the width / height of each tetris piece
     static const byte PIECE_DIMENSIONS[7][2];
@@ -33,8 +34,8 @@ class Piece {
     byte currentWidth;
     byte currentHeight;
   
-    Piece(int PIECE_TYPE, const int NUM_COLS);
-    
+    Piece(int PIECE_TYPE, byte (*pBoard)[32][8]);
+    bool hasBlocksBelow();
     void rotate(String direction);
     void move(int xDirection, int yDirection);
     void hardDrop();

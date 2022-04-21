@@ -25,7 +25,8 @@ void Piece::createArray() {
     }
 }
 
-Piece::Piece(const int PIECE_TYPE, const int NUM_COLS) {
+Piece::Piece(const int PIECE_TYPE, byte (*pBoard)[32][8]) {
+    this->pBoard = pBoard;
     type = PIECE_TYPE;
     width = PIECE_DIMENSIONS[type][1];
     height = PIECE_DIMENSIONS[type][0];
@@ -33,7 +34,7 @@ Piece::Piece(const int PIECE_TYPE, const int NUM_COLS) {
     currentWidth = width;
     currentHeight = height;
 
-    int middleOfRow = (NUM_COLS - width) / 2;
+    int middleOfRow = (8 - width) / 2;
     x = middleOfRow;
     y = 0;
     
@@ -225,6 +226,10 @@ void Piece::move(int xDirection, int yDirection) {
     yBoardLow+=yDirection;
 }
 
+bool Piece::hasBlocksBelow(){
+  return false;
+}
+
 void Piece::hardDrop() {
     /*
      *
@@ -232,7 +237,7 @@ void Piece::hardDrop() {
      * need a way to get the grid in this function
      * talk to matt to see how he uses grid in piece
      *
-     * from y = first row to last row do
+     * from y = row below piece to last row
      *  from piece x to piece x + width of x - 1:
      *    int belowUs = if y isn't the bottom y+1 else y
      *    if below us us a block:
@@ -240,4 +245,12 @@ void Piece::hardDrop() {
      *      return
      *
      */
+
+
+    for (int y = 0; y < 32; y++) {
+        for (int x = 0; x < 8; x++) {
+          byte block = (*pBoard)[y][x];
+        }
+        Serial.println();
+    }
 }

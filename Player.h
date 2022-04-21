@@ -3,6 +3,7 @@
 
 class Player {
    private:
+    byte (*pBoard)[32][8];
     int score;
     static const int JOY_X_PIN = A0, JOY_Y_PIN = A1, JOY_CLICK_PIN = 13;
     static const int LEFT_ROTATE_PIN = 6, RIGHT_ROTATE_PIN = 7,
@@ -26,7 +27,7 @@ class Player {
 
    public:
     Piece* piece;
-    Player();
+    Player(byte (*pBoard)[32][8]);
 
     void onEliminiated();  // TODO: ???
     void onDropButtonPressed();
@@ -35,5 +36,5 @@ class Player {
     void onRightRotatePressed();
     bool onJoystickMoved(int x, int y);
     bool checkInputChange();
-    void getNewPiece(const int NUM_COLS);
+    void getNewPiece();
 };

@@ -25,7 +25,7 @@ Game::Game() {
     }
 
     initBoard();
-    player = new Player();
+    player = new Player(&board);
 }
 
 // Populate board array with zeros
@@ -52,9 +52,8 @@ void Game::serialize(byte (&boardWithPiece)[ROWS][COLS],
 }
 
 void Game::start() {
-  player->getNewPiece(COLS);
+  player->getNewPiece();
   updateBoard();
-  state = States::WaitingForInput;
 }
 
 // Copies board and piece into into result array:
@@ -77,8 +76,14 @@ void Game::cloneBoardWithPiece(byte (&boardWithPiece)[ROWS][COLS]) {
     }
 }
 
+void Game::placePiece(){
+  
+}
+
 // Draws all the blocks on the tetris board on the led display
 void Game::updateBoard() { 
+    state = States::UpdatingBoard;
+
     byte boardWithPiece[ROWS][COLS];
     cloneBoardWithPiece(boardWithPiece);
 
@@ -100,4 +105,5 @@ void Game::updateBoard() {
     }
 
     isFirstFrame = 0;
+    state = States::Idle;
 }
