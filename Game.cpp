@@ -4,29 +4,16 @@
 
 void printBinary(byte inByte) {
     for (int b = 7; b >= 0; b--) {
-        //Serial.print(bitRead(inByte, b));
+        Serial.print(bitRead(inByte, b));
     }
-    //Serial.println();
+    Serial.println();
 }
 
 Game::Game() {
-    linesCleared = 0;
-    state = States::WaitingForStart;
     ledMatrix = new LedControl(DIN, CLK, CS, 4);
-
-    for (int i = 0; i < 4; i++) {
-        // turn off power saving, enables display
-        ledMatrix->shutdown(i, false);
-
-        // sets brightness (0~15 possible values)
-        ledMatrix->setIntensity(i, 1);
-
-        // clear screen
-        ledMatrix->clearDisplay(i);
-    }
-
-    initBoard();
     player = new Player(&board);
+    
+    this->reset();
 }
 
 // Populate board array with zeros
@@ -53,13 +40,30 @@ void Game::serialize(byte (&boardWithPiece)[ROWS][COLS],
 }
 
 void Game::start() {
-  for(int i = 0; i < 4; i++){
-     for(int j = 0; j < 3; j++)
-      board[31-i][j+2] = 1;
-  }
-      
+  state = States::GAME_IN_PROGRESS;
   player->getNewPiece();
   updateBoard();
+}
+
+void Game::reset(){
+  state = States::WAITING_FOR_GAME;
+  player->reset();
+
+  isFirstFrame = 1;
+  linesCleared = 0;
+  
+  initBoard();
+  
+  for(int i = 0; i < ROWS; i++)
+    prevDisplayedBlocks[i] = B00000000;
+    
+  commandToSend = "";
+
+  for (int i = 0; i < 4; i++) {
+      ledMatrix->shutdown(i, false);
+      ledMatrix->setIntensity(i, 1);
+      //ledMatrix->clearDisplay(i);
+  }
 }
 
 // Copies board into into boardWithPiece array:
@@ -87,9 +91,7 @@ void Game::placePiece(byte (&boardToEdit)[ROWS][COLS]){
 }
 
 // Draws all the blocks on the tetris board on the led display
-void Game::updateBoard() { 
-    state = States::UpdatingBoard;
-    
+void Game::updateBoard() {     
     byte boardWithPiece[ROWS][COLS];
     copyBoard(boardWithPiece);
     placePiece(boardWithPiece);
@@ -112,7 +114,6 @@ void Game::updateBoard() {
     }
 
     isFirstFrame = 0;
-    state = States::Idle;
 }
 
 void Game::deleteLine(int lineToDelete) {
@@ -140,12 +141,13 @@ void Game::deleteClearedLines() {
 
 
   // Update the player's score:
-  // TODO: maybe this should be it's own function???
   if(linesCleared == 4) {
     player->score += 2000;
   } else {
     player->score += (100 * linesCleared);
   }
+  String toSend = "!updateScore ";
+  commandToSend = toSend + player->score + "\n";
 }
 
 

@@ -29,7 +29,7 @@ class Player {
     Player(byte (*pBoard)[32][8]);
     int score;
 
-    void onEliminiated();  // TODO: ???
+    void reset();
     void onDropButtonPressed();
     void onJoystickPressed();
     void onLeftRotatePressed();

@@ -21,10 +21,8 @@ class Game {
     Game();
 
     enum class States {
-        GameOver,
-        Idle,
-        UpdatingBoard,
-        WaitingForStart,
+        GAME_IN_PROGRESS,
+        WAITING_FOR_GAME,
     };
 
     byte board[ROWS][COLS];
@@ -35,6 +33,7 @@ class Game {
     Player* player;
     void drawBoard();
     void start();
+    void reset();
     void updateBoard();
     void placePiece(byte (&boardToEdit)[ROWS][COLS]);
 
@@ -46,7 +45,6 @@ class Game {
         - sets game state to game over
        up
     */
-    void stop();
     void deleteLine(int lineToDelete);
     void deleteClearedLines();
     void recieveGarbage(int numLines);

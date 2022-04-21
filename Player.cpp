@@ -4,17 +4,29 @@
 
 Player::Player(byte (*pBoard)[32][8]) {
     this->pBoard = pBoard;
-
-    lastButtonPressTime = millis();
-    lastSoftDropTime = millis();
-    prevJoystickDirection = "";
+    reset();
     
     for (byte pin : buttonPins) {
         pinMode(pin, INPUT_PULLUP);
     }
+}
 
-    piece = nullptr;
-    score = 0;
+void Player::reset(){
+  lastButtonPressTime = millis();
+  lastSoftDropTime = millis();
+  verticalHoldStartTime = millis();
+  prevJoystickDirection = "";
+
+  for(int i = 0; i < NUM_BUTTONS; i++){
+    previousButtonStates[i] = 1;
+    currentButtonStates[i] = 1;
+  }
+
+ // if(piece)
+//    piece->reset();
+
+  piece = nullptr;
+  score = 0;
 }
 
 void Player::getNewPiece() {
